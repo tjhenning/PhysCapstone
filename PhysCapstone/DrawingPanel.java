@@ -13,11 +13,12 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.Stroke;
 import java.awt.BasicStroke;
+import java.awt.geom.Line2D;
 
 public class DrawingPanel extends JPanel
 {
     Entity selected;
-    boolean selecting=false;
+    int selecting=0;//0=none,1=object,2=player.
     ArrayList<Entity> groundBlocks;
     ArrayList<GravitySource> gravSources;
     Player player=new Player(new Point2D.Double(400,250),25);   
@@ -33,8 +34,8 @@ public class DrawingPanel extends JPanel
         gravSources=new ArrayList<GravitySource>();
         setBackground(Color.WHITE);       
         current=new Color(0,0,0);
-        //addMouseListener(new ClickListener());
-        //addMouseMotionListener(new MovementListener());
+        addMouseListener(new ClickListener());
+        addMouseMotionListener(new MovementListener());
         setFocusable(true);
         addKeyListener(new KeysListener());
         loadLevel(0);
@@ -101,11 +102,10 @@ public class DrawingPanel extends JPanel
                 int top=(int)(Entity.getCenter().getY()-Entity.getYL());                
             }         
             
-            player.moveTick(gravSources);     
-            
-            repaint();
-            requestFocusInWindow();
+            player.moveTick(gravSources);                 
         }
+        repaint();
+            requestFocusInWindow();
     }   
     public void loadLevel(int which)
     {
@@ -151,9 +151,15 @@ public class DrawingPanel extends JPanel
           if (e.getKeyCode()==KeyEvent.VK_SPACE)
             {                
                 if (freeze)
-                freeze=false;
+                {freeze=false;selecting=0;selected=null;}
                 else
                 freeze=true;
+            }
+            else if (e.getKeyCode()==KeyEvent.VK_P&&freeze)
+            {
+                selecting=2;
+                selected=null;
+                System.out.println("Click to summon ball player.");
             }
             requestFocusInWindow();           
         }
@@ -179,47 +185,54 @@ public class DrawingPanel extends JPanel
         {}
         public void mousePressed(MouseEvent e)
         {            
-            
-            Point2D.Double point=new Point2D.Double(e.getPoint().getX(),e.getPoint().getY());
-            for(int i=0;i<gravSources.size();i++)
-         
+            if (freeze)
             {
-                if (gravSources.get(i).isInside(point))
+                Point2D.Double point=new Point2D.Double(e.getPoint().getX(),e.getPoint().getY());
+                if(player.isInside(point))
                 {
-                    selected=gravSources.get(i);
+                    selected=null;
+                    selecting=2;
+                }
+                else
+                {
+                    for(int i=0;i<gravSources.size();i++)         
+                    {
+                        if (gravSources.get(i).isInside(point))
+                        {
+                            selected=gravSources.get(i);
+                            selecting=1;                        
+                        }        
+                    }
                 }        
+                requestFocusInWindow();
             }
-            requestFocusInWindow();
+            
         }
         public void mouseReleased(MouseEvent e)
         {
             //canDrag=false;
             //nowResize=false;
-            requestFocusInWindow();
+            //requestFocusInWindow();
         }
     }
     public class MovementListener implements MouseMotionListener
     {
         public void mouseDragged(MouseEvent e)
         {
-            Point2D.Double point=new Point2D.Double(e.getPoint().getX(),e.getPoint().getY());
-//             if (dragMode)
-//             {                
-//                 if (canDrag)
-//                 {
-//                     lastActiveEntity.goTo(point.getX(),point.getY());
-//                     repaint();
-//                 }
-//             }
-//             else
-//             {                
-//                 if (nowResize)
-//                 {                    
-//                     lastActiveEntity.setRadius(lastActiveEntity.getCenter().distance(point));
-//                     repaint();
-//                 }
-//             }     
-            requestFocusInWindow();
+            if (freeze)
+            {
+                Point2D.Double point=new Point2D.Double(e.getPoint().getX(),e.getPoint().getY());
+                if (selecting==1)
+                {                
+                    selected.goTo(point);                                
+                }
+                else if (selecting==2)
+                {
+                    player.goTo(point.getX(),point.getY());
+                }
+                
+                requestFocusInWindow();
+            }
         }
         public void mouseMoved(MouseEvent e)
         {}

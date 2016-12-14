@@ -14,7 +14,13 @@ class GravitySource extends Entity
     {        
         center=new Point2D.Double(staticX,staticY);                 
         this.mass=mass;
-        radius=mass;
+        if (mass>0)
+        {
+            radius=mass;
+        }
+        else
+        {radius=mass*-1;}
+            
     }    
     public void draw(Graphics2D g2)
     {
@@ -23,8 +29,7 @@ class GravitySource extends Entity
         g2.fill(rect);
         g2.setColor(Color.RED);
         Ellipse2D.Double rect2=new Ellipse2D.Double((int)(center.getX()),(int)(center.getY()),2,2);
-        g2.fill(rect2);
-        
+        g2.fill(rect2);        
     }
     
     boolean isInside(Point2D.Double point)
@@ -43,7 +48,7 @@ class GravitySource extends Entity
     
     public void goTo(Point2D.Double to)
     {
-        center=to;
+        center=to;        
     }
 
     public Point2D.Double getCenter()

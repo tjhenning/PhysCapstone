@@ -116,7 +116,7 @@ class Player
     
     public boolean isInside(Point2D.Double point)
     {
-        return (Math.abs(center.getX()-point.getX())<radius)&&(Math.abs(center.getY()-point.getY())<radius);
+        return (center.distance(point)<=25);
     }
     
     public boolean isOnTopOfNextFrame(Entity on)
