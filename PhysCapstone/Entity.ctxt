@@ -1,0 +1,16 @@
+#BlueJ class context
+comment0.params=
+comment0.target=Entity()
+comment1.params=
+comment1.target=java.awt.geom.Point2D.Double\ getCenter()
+comment2.params=
+comment2.target=double\ getXL()
+comment3.params=
+comment3.target=double\ getYL()
+comment4.params=to
+comment4.target=void\ goTo(java.awt.geom.Point2D.Double)
+comment5.params=point
+comment5.target=boolean\ isInside(java.awt.geom.Point2D.Double)
+comment6.params=g2
+comment6.target=void\ draw(java.awt.Graphics2D)
+numComments=7
