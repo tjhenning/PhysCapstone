@@ -230,9 +230,11 @@ public class DrawingPanel extends JPanel
     {
         public void mouseDragged(MouseEvent e)
         {
-            if (freeze&&selected!=null)
+            
+            if (freeze&&(selected!=null||selecting==2))
             {
                 Point2D.Double point=new Point2D.Double(e.getPoint().getX(),e.getPoint().getY());
+                System.out.println(selecting);
                 if (selecting==1)
                 {                
                     selected.goTo(point);                                
@@ -240,6 +242,7 @@ public class DrawingPanel extends JPanel
                 else if (selecting==2)
                 {
                    player.setVector(player.getX()-e.getPoint().getX(),e.getPoint().getY()-player.getY());
+                   
                 }                
                 requestFocusInWindow();
             }

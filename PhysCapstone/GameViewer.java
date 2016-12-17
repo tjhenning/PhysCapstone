@@ -37,7 +37,7 @@ public class GameViewer
         for( int seconds = 0; seconds < ANIMATION_TIME_IN_SECONDS; seconds=1 )
         {
             canvas.nextFrame();
-            Thread.sleep( (long)20 );
+            Thread.sleep( (long)7 );
         }
         
     }
