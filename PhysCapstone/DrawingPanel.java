@@ -18,10 +18,10 @@ import java.awt.geom.Line2D;
 public class DrawingPanel extends JPanel
 {
     Entity selected;
-    int selecting=0;//0=none,1=object,2=player.
+    int selecting=0;//0=none,1=object,2=player    
     ArrayList<Entity> groundBlocks;
-    ArrayList<GravitySource> gravSources;
-    Player player=new Player(new Point2D.Double(400,250),25);   
+    ArrayList<Entity> gravSources;
+    Player player=new Player(new Point2D.Double(400,400),25);   
     Color current;    
     int currentLevel=1;
     static double wobble=1;
@@ -31,15 +31,15 @@ public class DrawingPanel extends JPanel
     public DrawingPanel()
     {        
         groundBlocks=new ArrayList<Entity>();
-        gravSources=new ArrayList<GravitySource>();
+        gravSources=new ArrayList<Entity>();
         setBackground(Color.WHITE);       
         current=new Color(0,0,0);
         addMouseListener(new ClickListener());
         addMouseMotionListener(new MovementListener());
         setFocusable(true);
         addKeyListener(new KeysListener());
-        loadLevel(0);
-        player.addVector(1,1);
+        loadLevel(2);
+        player.addVector(5,4);
         
     }
     
@@ -70,15 +70,15 @@ public class DrawingPanel extends JPanel
         g2.setStroke(new BasicStroke(4));
         
         double position=0;               
-        for (GravitySource grav:gravSources)
+        for (Entity grav:gravSources)
         {            
             grav.draw(g2);
         }
         
         for (Entity Entity:groundBlocks)
         {            
-           
-        }
+           Entity.draw(g2);
+        }        
         
         player.draw(g2);
         // System.out.println(current);
@@ -87,19 +87,19 @@ public class DrawingPanel extends JPanel
     {        
         if (!freeze)
         {
-             for (GravitySource enemy:gravSources)
+             for (Entity mob:gravSources)
             {                            
-                
+                mob.moveTick(gravSources,player); 
             }    
             for (Entity Entity:groundBlocks)
             {            
-                if(player.isHitNextFrame(Entity))
-                {
-                    player.hitWall(Entity.getCenter().getX(),Entity.getCenter().getY(),Entity.getXL(),Entity.getYL(),Entity);
-                  
-                }
-                boolean b=player.isOnTopOfNextFrame(Entity);
-                int top=(int)(Entity.getCenter().getY()-Entity.getYL());                
+                 if(player.isHitNextFrame(Entity))
+                 {
+                     player.hitWall(Entity.getCenter().getX(),Entity.getCenter().getY(),Entity.getXL()/2,Entity.getYL()/2);
+                   
+                 }
+                 boolean b=player.isOnTopOfNextFrame(Entity);
+                 int top=(int)(Entity.getCenter().getY()-Entity.getYL());                
             }         
             
             player.moveTick(gravSources);                 
@@ -110,37 +110,42 @@ public class DrawingPanel extends JPanel
     public void loadLevel(int which)
     {
         groundBlocks=new ArrayList<Entity>();
-        gravSources=new ArrayList<GravitySource>();        
+        gravSources=new ArrayList<Entity>();        
         
         if (which==0)
         {
-            gravSources.add(new GravitySource(200,300,50));
-            gravSources.add(new GravitySource(200,200,-40));
+            //gravSources.add(new GravitySource(400,400,40));
+            //gravSources.add(new GravitySource(200,200,-40));
+            //groundBlocks.add(new StationaryBlock(400,400,100,100));
+            gravSources.add(new MobileGravS(200,200,25,-1,0));
         }
         else if (which==2)
         {
-                  
+              groundBlocks.add(new StationaryBlock(250,25,500,50));   
+              groundBlocks.add(new StationaryBlock(250,475,500,50));   
+              groundBlocks.add(new StationaryBlock(25,250,50,500));  
+              groundBlocks.add(new StationaryBlock(475,250,50,500));    
+              //gravSources.add(new MobileGravS(200,200,25,-1,0));
         }
         else if (which==3)
         {
-                          
+              groundBlocks.add(new StationaryBlock(250,25,500,50));   
+              groundBlocks.add(new StationaryBlock(250,475,500,50));   
+              groundBlocks.add(new StationaryBlock(25,250,50,500));  
+              groundBlocks.add(new StationaryBlock(475,250,50,500)); 
+              gravSources.add(new GravitySource(25,25,-50));
+              gravSources.add(new GravitySource(475,25,-50));
+              gravSources.add(new GravitySource(475,475,-50));
+              gravSources.add(new GravitySource(25,475,-50));
+              gravSources.add(new GravitySource(250,250,30));
+              gravSources.add(new GravitySource(25,250,40));
+              gravSources.add(new GravitySource(475,250,40));
+              gravSources.add(new GravitySource(250,475,40));
+              gravSources.add(new GravitySource(250,25,40));
+              player.goTo(300,300);
         }
         else if (which==4)
         {
-//             groundBlocks.add(new RectObj(new Point2D.Double(1000,800),1000,75,Color.BLACK));
-//             groundBlocks.add(new RectObj(new Point2D.Double(1000,125),1000,75,Color.BLACK));
-//             gravSources.add(new FlyingEnemy(Color.ORANGE,600,400,150,.001,40));
-//             gravSources.add(new FlyingEnemy(Color.ORANGE,1100,0,550,.0005,40));
-//             gravSources.add(new MatedEnemy(Color.RED,groundBlocks.get(1),75,.001,75));
-//             gravSources.add(new MatedEnemy(Color.RED,groundBlocks.get(0),35,.002,5));
-//             gravSources.add(new Killplane(Color.RED,1350,675,50));
-//             gravSources.add(new Killplane(Color.RED,1350,575,50));
-//             gravSources.add(new Killplane(Color.RED,1350,250,50));
-//             gravSources.add(new Killplane(Color.RED,900,675,50));                       
-//             gravSources.add(new Killplane(Color.RED,1850,625,100));  
-//             gravSources.add(new Killplane(Color.RED,1850,475,50));   
-//             
-//             finish=new RectObj(new Point2D.Double(2000,100),50,1000,Color.BLACK);
         }
     }
     public class KeysListener implements KeyListener
@@ -203,23 +208,29 @@ public class DrawingPanel extends JPanel
                             selecting=1;                        
                         }        
                     }
+                    for(int i=0;i<groundBlocks.size();i++)         
+                    {
+                        if (groundBlocks.get(i).isInside(point))
+                        {
+                            selected=groundBlocks.get(i);
+                            selecting=1;                        
+                        }        
+                    }
                 }        
                 requestFocusInWindow();
             }
             
         }
         public void mouseReleased(MouseEvent e)
-        {
-            //canDrag=false;
-            //nowResize=false;
-            //requestFocusInWindow();
+        {            
+            selected=null;
         }
     }
     public class MovementListener implements MouseMotionListener
     {
         public void mouseDragged(MouseEvent e)
         {
-            if (freeze)
+            if (freeze&&selected!=null)
             {
                 Point2D.Double point=new Point2D.Double(e.getPoint().getX(),e.getPoint().getY());
                 if (selecting==1)
@@ -228,9 +239,8 @@ public class DrawingPanel extends JPanel
                 }
                 else if (selecting==2)
                 {
-                    player.goTo(point.getX(),point.getY());
-                }
-                
+                   player.setVector(player.getX()-e.getPoint().getX(),e.getPoint().getY()-player.getY());
+                }                
                 requestFocusInWindow();
             }
         }

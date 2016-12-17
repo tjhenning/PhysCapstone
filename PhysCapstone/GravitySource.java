@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.Line2D;
 import java.awt.geom.Ellipse2D;
+import java.util.ArrayList;
 
 class GravitySource extends Entity
 {
@@ -24,7 +25,10 @@ class GravitySource extends Entity
     }    
     public void draw(Graphics2D g2)
     {
-        g2.setColor(Color.BLUE);
+        if (mass>0)
+            g2.setColor(Color.BLUE);
+        else
+            g2.setColor(Color.RED);
         Ellipse2D.Double rect=new Ellipse2D.Double((int)(center.getX()-(radius/2)),(int)(center.getY()-(radius/2)),radius,radius);
         g2.fill(rect);
         g2.setColor(Color.RED);
@@ -63,4 +67,7 @@ class GravitySource extends Entity
     {
         return mass;
     }
+    
+     public void moveTick(ArrayList<Entity> gravSources,Player player)
+    {}
 }

@@ -1,0 +1,24 @@
+#BlueJ class context
+comment0.params=staticX\ staticY\ mass\ xV\ yV
+comment0.target=MobileGravS(double,\ double,\ double,\ double,\ double)
+comment1.params=gravSources\ player
+comment1.target=void\ moveTick(java.util.ArrayList,\ Player)
+comment10.params=
+comment10.target=double\ getMass()
+comment2.params=g2
+comment2.target=void\ draw(java.awt.Graphics2D)
+comment3.params=point
+comment3.target=boolean\ isInside(java.awt.geom.Point2D.Double)
+comment4.params=
+comment4.target=double\ getXL()
+comment5.params=
+comment5.target=double\ getYL()
+comment6.params=to
+comment6.target=void\ goTo(java.awt.geom.Point2D.Double)
+comment7.params=x\ y
+comment7.target=void\ move(double,\ double)
+comment8.params=
+comment8.target=java.awt.geom.Point2D.Double\ getCenter()
+comment9.params=
+comment9.target=int\ interactionType()
+numComments=11
