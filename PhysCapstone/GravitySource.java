@@ -26,6 +26,12 @@ class GravitySource extends Entity
     public void draw(Graphics2D g2)
     {
         if (mass>0)
+        {
+            radius=mass;
+        }
+        else
+        {radius=mass*-1;}
+        if (mass>0)
             g2.setColor(Color.BLUE);
         else
             g2.setColor(Color.RED);
@@ -66,6 +72,11 @@ class GravitySource extends Entity
     public double getMass()
     {
         return mass;
+    }
+    
+    public void changeMass(double delta)
+    {
+        mass+=delta;
     }
     
      public void moveTick(ArrayList<Entity> gravSources,Player player)

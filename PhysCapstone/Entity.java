@@ -24,4 +24,16 @@ public abstract class Entity
     {
         return 0;
     }
+    public void changeMass(double delta)
+    {
+        
+    }
+    public void changeHeight(double delta)
+    {
+        
+    }
+    public void changeLength(double delta)
+    {
+        
+    }
 }

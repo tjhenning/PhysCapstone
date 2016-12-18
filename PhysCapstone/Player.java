@@ -35,8 +35,8 @@ class Player
            
            if(grav.getCenter().getX()-center.getX()<0)
                 {angle+=Math.PI;}               
-           yVelocity-=distance*Math.sin(angle);  
-           xVelocity-=distance*Math.cos(angle);
+           yVelocity-=distance*Math.sin(angle)/mass;  
+           xVelocity-=distance*Math.cos(angle)/mass;
            
            }
            //System.out.println(distance);

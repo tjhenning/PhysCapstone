@@ -21,6 +21,10 @@ class StationaryBlock extends Entity
     }    
     public void draw(Graphics2D g2)
     {
+        if (width<0)
+        {width=1;}
+        if(height<0)
+        {height=1;}
         if (hasMoved)
         {
             rect=new Rectangle((int)center.getX()-width/2,(int)center.getY()-height/2,width,height);
@@ -62,4 +66,13 @@ class StationaryBlock extends Entity
     
      public void moveTick(ArrayList<Entity> gravSources,Player player)
     {}
+    
+    public void changeHeight(double delta)
+    {
+        height+=delta;hasMoved=true;
+    }
+    public void changeLength(double delta)
+    {
+        width+=delta;hasMoved=true;
+    }
 }

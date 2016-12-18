@@ -18,7 +18,7 @@ import java.awt.geom.Line2D;
 public class DrawingPanel extends JPanel
 {
     Entity selected;
-    int selecting=0;//0=none,1=object,2=player    
+    int selecting=0;//0=none,1=object,2=player,3=new gravity,4=new block,5=new mob     
     ArrayList<Entity> groundBlocks;
     ArrayList<Entity> gravSources;
     Player player=new Player(new Point2D.Double(400,400),25);   
@@ -38,8 +38,8 @@ public class DrawingPanel extends JPanel
         addMouseMotionListener(new MovementListener());
         setFocusable(true);
         addKeyListener(new KeysListener());
-        loadLevel(2);
-        player.addVector(5,4);
+        loadLevel(1);
+        player.addVector(0,0);
         
     }
     
@@ -119,13 +119,18 @@ public class DrawingPanel extends JPanel
             //groundBlocks.add(new StationaryBlock(400,400,100,100));
             gravSources.add(new MobileGravS(200,200,25,-1,0));
         }
+        else if (which==1)
+        {
+            gravSources.add(new MobileGravS(200,200,300,-.7,0));
+        }
         else if (which==2)
         {
               groundBlocks.add(new StationaryBlock(250,25,500,50));   
               groundBlocks.add(new StationaryBlock(250,475,500,50));   
               groundBlocks.add(new StationaryBlock(25,250,50,500));  
               groundBlocks.add(new StationaryBlock(475,250,50,500));    
-              //gravSources.add(new MobileGravS(200,200,25,-1,0));
+              gravSources.add(new MobileGravS(200,200,100,-1,0));
+              gravSources.add(new GravitySource(600,600,-40));
         }
         else if (which==3)
         {
@@ -143,10 +148,7 @@ public class DrawingPanel extends JPanel
               gravSources.add(new GravitySource(250,475,40));
               gravSources.add(new GravitySource(250,25,40));
               player.goTo(300,300);
-        }
-        else if (which==4)
-        {
-        }
+        }        
     }
     public class KeysListener implements KeyListener
     {
@@ -164,7 +166,60 @@ public class DrawingPanel extends JPanel
             {
                 selecting=2;
                 selected=null;
-                System.out.println("Click to summon ball player.");
+                System.out.println("Click to send ball back onscreen.");
+            }
+            else if (e.getKeyCode()==KeyEvent.VK_G&&freeze)
+            {
+                selecting=3;
+                selected=null;                              
+            }
+            else if (e.getKeyCode()==KeyEvent.VK_B&&freeze)
+            {
+                selecting=4;
+                selected=null;                              
+            }
+            else if (e.getKeyCode()==KeyEvent.VK_M&&freeze)
+            {
+                selecting=5;
+                selected=null;                              
+            }
+            if(selected!=null){
+                if (e.getKeyCode()==KeyEvent.VK_ESCAPE&&freeze)
+                {
+                    for (int i=0;i<gravSources.size();i++)
+                    {
+                        if(gravSources.get(i)==selected)
+                        {
+                            gravSources.remove(i);
+                        }
+                    }
+                    for (int i=0;i<groundBlocks.size();i++)
+                    {
+                        if(groundBlocks.get(i)==selected)
+                        {
+                            groundBlocks.remove(i);
+                        }
+                    }
+                }
+                else if (e.getKeyCode()==KeyEvent.VK_UP&&freeze)
+                {
+                    selected.changeMass(3);
+                    selected.changeHeight(5);                  
+                }
+                else if (e.getKeyCode()==KeyEvent.VK_DOWN&&freeze)
+                {
+                    selected.changeMass(-3);
+                    selected.changeHeight(-5);
+                }
+                else if (e.getKeyCode()==KeyEvent.VK_LEFT&&freeze)
+                {                
+                    selected.changeLength(-5);
+                }
+                else if (e.getKeyCode()==KeyEvent.VK_RIGHT&&freeze)
+                {                
+                    selected.changeLength(5);
+                }
+                repaint();
             }
             requestFocusInWindow();           
         }
@@ -223,7 +278,7 @@ public class DrawingPanel extends JPanel
         }
         public void mouseReleased(MouseEvent e)
         {            
-            selected=null;
+            //selected=null;
         }
     }
     public class MovementListener implements MouseMotionListener
@@ -231,19 +286,49 @@ public class DrawingPanel extends JPanel
         public void mouseDragged(MouseEvent e)
         {
             
-            if (freeze&&(selected!=null||selecting==2))
+            if (freeze)
             {
-                Point2D.Double point=new Point2D.Double(e.getPoint().getX(),e.getPoint().getY());
-                System.out.println(selecting);
-                if (selecting==1)
-                {                
-                    selected.goTo(point);                                
-                }
-                else if (selecting==2)
+                Point2D.Double point=new Point2D.Double(e.getPoint().getX(),e.getPoint().getY());   
+                        
+                if (selecting==2)
                 {
-                   player.setVector(player.getX()-e.getPoint().getX(),e.getPoint().getY()-player.getY());
-                   
-                }                
+                    if(selected==null)
+                    {
+                        player.setVector(player.getX()-e.getPoint().getX(),e.getPoint().getY()-player.getY());
+                    }
+                }                     
+                else if (selecting==1)
+                    {                
+                        selected.goTo(point);                                
+                    }
+                    else if (selecting==3)
+                    {                        
+                        if(selected==null)
+                        {
+                            selected=new GravitySource(e.getPoint().getX(),e.getPoint().getY(),30);
+                            gravSources.add(selected);                        
+                        }
+                        selected.goTo(point);
+                    }           
+                    else if (selecting==4)
+                    {                        
+                        if(selected==null)
+                        {
+                            selected=new StationaryBlock(e.getPoint().getX(),e.getPoint().getY(),100,100);
+                            groundBlocks.add(selected);                        
+                        }
+                        selected.goTo(point);
+                    }     
+                    else if (selecting==5)
+                    {                        
+                        if(selected==null)
+                        {
+                            selected=new MobileGravS(e.getPoint().getX(),e.getPoint().getY(),30,0,0);
+                            gravSources.add(selected);                        
+                        }
+                        selected.goTo(point);
+                    }     
+                
                 requestFocusInWindow();
             }
         }

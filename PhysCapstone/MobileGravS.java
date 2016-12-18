@@ -30,7 +30,7 @@ class MobileGravS extends Entity
     }    
     
      public void moveTick(ArrayList<Entity> gravSources,Player player)
-    {
+    {        
         for(Entity grav:gravSources)
        {
            double distance=center.distance(grav.getCenter());           
@@ -41,8 +41,8 @@ class MobileGravS extends Entity
            
                if(grav.getCenter().getX()-center.getX()<0)
                     {angle+=Math.PI;}               
-               yVelocity-=distance*Math.sin(angle);  
-               xVelocity-=distance*Math.cos(angle);           
+               yVelocity-=distance*Math.sin(angle)/mass;  
+               xVelocity-=distance*Math.cos(angle)/mass;           
            }           
        }
        double distance=center.distance(player.getCenter());           
@@ -52,14 +52,20 @@ class MobileGravS extends Entity
            double angle=Math.atan((center.getY()-player.getCenter().getY())/(player.getCenter().getX()-center.getX()));
            if(player.getCenter().getX()-center.getX()<0)
                 {angle+=Math.PI;}               
-           yVelocity-=distance*Math.sin(angle);  
-           xVelocity-=distance*Math.cos(angle);           
+           yVelocity-=distance*Math.sin(angle)/mass;  
+           xVelocity-=distance*Math.cos(angle)/mass;           
        }           
        center.setLocation(center.getX()-xVelocity,center.getY()+yVelocity);
     }
     
     public void draw(Graphics2D g2)
     {
+        if (mass>0)
+        {
+            radius=mass;
+        }
+        else
+        {radius=mass*-1;}
         if (mass>0)
             g2.setColor(Color.BLUE);
         else
@@ -106,5 +112,9 @@ class MobileGravS extends Entity
     public double getMass()
     {
         return mass;
+    }
+    public void changeMass(double delta)
+    {
+        mass+=delta;
     }
 }
