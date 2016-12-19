@@ -15,7 +15,7 @@ class Player
     Color color;
     double yVelocity=0;
     double xVelocity=0;
-    double mass=25;
+    double mass=.000001;
     public Player(Point2D.Double center, double radius)
     {
         this.center=center;

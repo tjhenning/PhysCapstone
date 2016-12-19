@@ -21,7 +21,7 @@ public class DrawingPanel extends JPanel
     int selecting=0;//0=none,1=object,2=player,3=new gravity,4=new block,5=new mob     
     ArrayList<Entity> groundBlocks;
     ArrayList<Entity> gravSources;
-    Player player=new Player(new Point2D.Double(400,400),25);   
+    Player player=new Player(new Point2D.Double(4000,400),25);   
     Color current;    
     int currentLevel=1;
     static double wobble=1;
@@ -38,7 +38,7 @@ public class DrawingPanel extends JPanel
         addMouseMotionListener(new MovementListener());
         setFocusable(true);
         addKeyListener(new KeysListener());
-        loadLevel(1);
+        loadLevel(0);
         player.addVector(0,0);
         
     }
@@ -118,6 +118,12 @@ public class DrawingPanel extends JPanel
             //gravSources.add(new GravitySource(200,200,-40));
             //groundBlocks.add(new StationaryBlock(400,400,100,100));
             gravSources.add(new MobileGravS(200,200,25,-1,0));
+            gravSources.add(new MobileGravS(200,100,25,-1,0));
+            gravSources.add(new MobileGravS(200,300,25,-1,0));
+            gravSources.add(new MobileGravS(200,400,25,-1,0));
+            gravSources.add(new MobileGravS(400,150,25,1,0));
+            gravSources.add(new MobileGravS(400,250,25,1,0));
+            gravSources.add(new MobileGravS(400,350,25,1,0));            
         }
         else if (which==1)
         {
@@ -129,8 +135,8 @@ public class DrawingPanel extends JPanel
               groundBlocks.add(new StationaryBlock(250,475,500,50));   
               groundBlocks.add(new StationaryBlock(25,250,50,500));  
               groundBlocks.add(new StationaryBlock(475,250,50,500));    
-              gravSources.add(new MobileGravS(200,200,100,-1,0));
-              gravSources.add(new GravitySource(600,600,-40));
+              gravSources.add(new MobileGravS(200,300,25,-1,0));
+              //gravSources.add(new GravitySource(600,600,-40));
         }
         else if (which==3)
         {
@@ -203,21 +209,21 @@ public class DrawingPanel extends JPanel
                 }
                 else if (e.getKeyCode()==KeyEvent.VK_UP&&freeze)
                 {
-                    selected.changeMass(3);
-                    selected.changeHeight(5);                  
+                    selected.changeMass(5);
+                    selected.changeHeight(8);                  
                 }
                 else if (e.getKeyCode()==KeyEvent.VK_DOWN&&freeze)
                 {
-                    selected.changeMass(-3);
-                    selected.changeHeight(-5);
+                    selected.changeMass(-5);
+                    selected.changeHeight(-8);
                 }
                 else if (e.getKeyCode()==KeyEvent.VK_LEFT&&freeze)
                 {                
-                    selected.changeLength(-5);
+                    selected.changeLength(-8);
                 }
                 else if (e.getKeyCode()==KeyEvent.VK_RIGHT&&freeze)
                 {                
-                    selected.changeLength(5);
+                    selected.changeLength(8);
                 }
                 repaint();
             }
